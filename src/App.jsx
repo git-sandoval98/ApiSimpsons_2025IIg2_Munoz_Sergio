@@ -9,7 +9,6 @@ import LocationPage from './Pages/LocationPage/LocationPage'
 function App() {
   return (
     <Router>
-      <p>Hola</p>
       <Header />
       <div id='container-pages'>
         <Navbar />
