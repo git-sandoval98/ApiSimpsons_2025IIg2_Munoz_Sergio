@@ -1,6 +1,11 @@
-:root { --header-h: 150px; }
+:root {
+  --header-h: 150px;
+  --glow-duration: 2.6s; 
+  --glow-delay-logo: 0.12s;
+  --glow-delay-text: 0s;
+}
 
-header{
+header {
   position: sticky;
   top: 0;
   z-index: 1000;
@@ -11,26 +16,88 @@ header{
   gap: 24px;
   color: #fff;
   text-shadow: 2px 2px 4px #000;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, .3);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   padding: 0 16px;
 }
 
-#image-title{
+#image-title {
   height: var(--header-h);
   max-height: 150px;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.35s ease,
+              filter 0.35s ease,
+              box-shadow 0.35s ease;
+  filter: drop-shadow(2px 2px 4px rgba(0, 0, 0, 0.4));
+  animation: syncedGlow var(--glow-duration) ease-in-out infinite alternate;
+  animation-delay: var(--glow-delay-logo);
 }
 
-header h1{
+#image-title:hover {
+  transform: rotate(-6deg) scale(1.12);
+  filter: drop-shadow(0 0 12px rgba(255, 255, 150, 0.9)) brightness(1.15);
+  box-shadow: 0 0 12px rgba(255, 255, 0, 0.5);
+}
+
+#image-title:active {
+  transform: rotate(0deg) scale(0.93);
+  transition: transform 0.1s ease;
+  filter: drop-shadow(0 0 8px rgba(255, 255, 100, 0.7));
+}
+
+header h1 {
   font-weight: 800;
   line-height: 1;
   font-size: clamp(24px, 5vw, 56px);
+  color: #fff;
+  text-shadow: 2px 2px 4px #000;
+  user-select: none;
+
+  animation: syncedGlow var(--glow-duration) ease-in-out infinite alternate;
+  animation-delay: var(--glow-delay-text);
 }
 
-@media (max-width: 1024px){
+@keyframes syncedGlow {
+  0% {
+    text-shadow:
+      0 0 6px #000,
+      0 0 8px #FFD700,
+      0 0 12px #FFEA70;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 100, 0.45)) brightness(1.05);
+  }
+  100% {
+    text-shadow:
+      0 0 10px #000,
+      0 0 12px #FFF48A,
+      0 0 20px #FFD700;
+    filter: drop-shadow(0 0 12px rgba(255, 255, 180, 0.95)) brightness(1.22);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #image-title,
+  header h1 {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+@media (max-width: 1024px) {
   :root { --header-h: 120px; }
+  #image-title { max-height: 120px; }
 }
 
-@media (max-width: 768px){
+@media (max-width: 768px) {
   :root { --header-h: 90px; }
-  #image-title{ max-height: 90px; }
+
+  header {
+    gap: 12px;
+    padding: 0 10px;
+  }
+
+  #image-title { max-height: 90px; }
+
+  header h1 {
+    font-size: clamp(20px, 6vw, 40px);
+  }
 }
