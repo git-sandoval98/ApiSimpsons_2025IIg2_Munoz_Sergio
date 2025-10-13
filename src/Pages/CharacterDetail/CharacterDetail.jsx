@@ -1,11 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import {
-  Box, Typography, Chip, Card, CardMedia, CardContent,
-  CircularProgress, Alert, Button, Divider
-} from '@mui/material'
+import {Box, Typography, Chip, Card, CardMedia, CardContent, CircularProgress, Alert, Button, Divider} from '@mui/material'
 
-// ---- Helpers de imágenes (CDN) ----
 function cdnUrl(imagePath, kind = 'character', size = 1280) {
   if (!imagePath) return ''
   let p = String(imagePath).trim()

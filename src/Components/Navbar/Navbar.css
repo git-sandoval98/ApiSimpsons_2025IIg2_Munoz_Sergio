@@ -1,61 +1,52 @@
-/* ====== Navbar lateral ====== */
-.sidebar {
+:root { --header-h: 150px; }
+
+.sidebar{
   position: fixed;
-  top: var(--header-h);
   left: 0;
+  top: var(--header-h);
   bottom: 0;
   width: 200px;
   background-color: #FED420;
-  overflow-y: auto;
+  overflow: auto;  
   z-index: 900;
 }
 
-/* ====== Lista de enlaces ====== */
-.sidebar ul {
+.sidebar ul{
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  gap: 20px;  
-  margin-top: 40px;      
+  gap: 20px;
+  margin-top: 40px;
   padding: 0;
 }
+.sidebar li{ list-style: none; }
 
-/* ====== Elementos de la lista ====== */
-.sidebar li {
-  list-style: none;   
-}
-
-/* ====== Enlaces ====== */
-.sidebar a {
+.sidebar a{
   text-decoration: none;
-  color: white;            
+  color: #fff;
   font-size: 2rem;
-  font-weight: bold;
-  text-shadow: 1px 1px 2px #000000;
-  cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  font-weight: 800;
+  text-shadow: 1px 1px 2px #000;
+  transition: transform .2s ease, color .2s ease;
+}
+.sidebar a:hover{ color:#000; transform: scale(1.05); }
+
+@media (max-width: 1024px){
+  .sidebar{ width: 180px; }
 }
 
-.sidebar a:hover {                
-  color: #FED420;
-  text-shadow: 2px 2px 4px #000000;
-  transform: scale(1.1);
-}
-
-/* ====== Responsive ====== */
-@media (max-width: 768px) {
+@media (max-width: 768px){
   .sidebar{
     position: static;
     width: 100%;
-    top: 0;
-    bottom: auto;
     height: auto;
+    top: 0; bottom: auto;
   }
-
-  .sidebar ul {
-    flex-direction: row;
-    justify-content: space-around;
-    margin-top: 0;
+  .sidebar ul{
+    flex-direction: row; 
+    justify-content: center;
+    gap: 16px;
+    margin: 8px 0;
   }
+  .sidebar a{ font-size: 1.25rem; }
 }
