@@ -1,9 +1,45 @@
-*{
+/* ====== RESET GENERAL ====== */
+* {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
 }
 
-#container-pages{
-  display: flex;   
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background-color: #FED420;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+/* ====== CONTENEDOR GENERAL ====== */
+#container-pages {
+  display: flex;
+  flex-direction: column;
+  margin-left: 200px;   /* deja espacio para la barra lateral fija */
+  padding: 16px;
+  min-height: 100vh;
+}
+
+/* ====== TÍTULOS DE SECCIONES ====== */
+h1, h2, h3 {
+  margin-bottom: 20px;
+  color: #000;
+  text-shadow: 1px 1px 1px rgba(0,0,0,0.1);
+}
+
+/* ====== TARJETAS ====== */
+.card {
+  transition: transform 0.2s ease-in-out;
+}
+.card:hover {
+  transform: scale(1.03);
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 768px) {
+  #container-pages {
+    margin-left: 0; 
+    padding: 12px;
+  }
 }

@@ -7,6 +7,7 @@ import CharactersPage from './Pages/CharactersPage/CharactersPage'
 import LocationPage from './Pages/LocationPage/LocationPage'
 import NotFound from './Pages/NotFound/NotFound'
 import Home from './Pages/Home/Home'
+import CharacterDetail from './Pages/CharacterDetail/CharacterDetail';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/episodios" element={<EpisodiesPage />} />
           <Route path="/personajes" element={<CharactersPage />} />
+          <Route path="/personaje/:id" element={<CharacterDetail />} />
           <Route path="/localizacion" element={<LocationPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
