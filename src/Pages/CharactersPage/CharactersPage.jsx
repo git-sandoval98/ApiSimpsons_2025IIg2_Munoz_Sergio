@@ -6,6 +6,8 @@ import {
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import Loader from '../../Components/Loader/Loader'
+import { motion } from "framer-motion";
+
 
 function cdnUrl(imagePath, kind = 'character', size = 500) {
   if (!imagePath) return ''
@@ -40,19 +42,16 @@ export default function CharactersPage() {
 
   const placeholder = `${import.meta.env.BASE_URL}placeholder.png`
 
-  // Debounce de 300ms
   useEffect(() => {
     const t = setTimeout(() => setDebouncedQuery(query.trim().toLowerCase()), 300)
     return () => clearTimeout(t)
   }, [query])
 
-  // Sincroniza página de API (2 UI = 1 API)
   useEffect(() => {
     const neededApiPage = Math.floor((uiPage - 1) / 2) + 1
     if (neededApiPage !== apiPage) setApiPage(neededApiPage)
   }, [uiPage])
 
-  // Fetch
   useEffect(() => {
     let cancel = false
       ; (async () => {
@@ -86,14 +85,12 @@ export default function CharactersPage() {
     return () => { cancel = true }
   }, [apiPage])
 
-  // Slicing por UI-página
   const itemsUi = useMemo(() => {
     const halfIndex = ((uiPage - 1) % 2)
     const start = halfIndex * UI_PAGE_SIZE
     return itemsApi.slice(start, start + UI_PAGE_SIZE)
   }, [itemsApi, uiPage])
 
-  // Filtro por nombre
   const filtered = useMemo(() => {
     if (!debouncedQuery) return itemsUi
     return itemsUi.filter(ch => (ch.name || '').toLowerCase().includes(debouncedQuery))
@@ -129,35 +126,47 @@ export default function CharactersPage() {
       ) : (
         <Grid container spacing={2}>
           {filtered.map((ch) => {
-            const img = resolveCharacterImage(ch)
-            const id = ch.id ?? ch._id ?? ''
-            return (
-              <Grid item key={id || ch.name} xs={12} sm={6} md={4} lg={3}>
-                <Card elevation={2} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-                  <CardMedia
-                    component="img"
-                    sx={{ aspectRatio: '4 / 3', width: '100%', objectFit: 'contain', backgroundColor: 'background.paper' }}
-                    image={img || placeholder}
-                    alt={ch.name}
-                    loading="lazy"
-                    onError={(e) => { e.currentTarget.src = placeholder }}
-                  />
-                  <CardContent sx={{ flexGrow: 1 }}>
-                    <Typography variant="subtitle1" fontWeight="bold">{ch.name}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      {ch.occupation || 'Ocupación desconocida'}
-                    </Typography>
-                    <Box mt={2}>
-                      <Typography component={Link} to={`/personaje/${id}`}
-                        sx={{ textDecoration: 'none', color: 'primary.main', fontWeight: 600 }}>
-                        Ver detalles →
-                      </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
-            )
-          })}
+  const img = resolveCharacterImage(ch)
+  const id = ch.id ?? ch._id ?? ''
+  return (
+    <Grid item key={id || ch.name} xs={12} sm={6} md={4} lg={3}>
+      <motion.div
+        className="character-card"
+        initial={{ opacity: 0, scale: 0.8, y: 40 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        whileHover={{ scale: 1.05, y: -5 }}
+      >
+        <Card elevation={2} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+          <CardMedia
+            component="img"
+            sx={{ aspectRatio: '4 / 3', width: '100%', objectFit: 'contain', backgroundColor: 'background.paper' }}
+            image={img || placeholder}
+            alt={ch.name}
+            loading="lazy"
+            onError={(e) => { e.currentTarget.src = placeholder }}
+          />
+          <CardContent sx={{ flexGrow: 1 }}>
+            <Typography variant="subtitle1" fontWeight="bold">{ch.name}</Typography>
+            <Typography variant="body2" color="text.secondary">
+              {ch.occupation || 'Ocupación desconocida'}
+            </Typography>
+            <Box mt={2}>
+              <Typography
+                component={Link}
+                to={`/personaje/${id}`}
+                sx={{ textDecoration: 'none', color: 'primary.main', fontWeight: 600 }}
+              >
+                Ver detalles →
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      </motion.div>
+    </Grid>
+  )
+})}
+
         </Grid>
       )}
 

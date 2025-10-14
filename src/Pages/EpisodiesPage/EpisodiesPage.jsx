@@ -7,6 +7,7 @@ import {
 } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import Loader from '../../Components/Loader/Loader'
+import { motion } from 'framer-motion'
 
 function cdnUrl(imagePath, kind = 'episode', size = 500) {
   if (!imagePath) return ''
@@ -26,6 +27,21 @@ const API_PAGE_SIZE = 20
 const SEASON_UI_PAGE_SIZE = 12
 const FETCH_BATCH = 5
 const SEASON_OPTIONS_MAX = 50
+
+const epContainer = {
+  hidden: { opacity: 1 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08, delayChildren: 0.05 }
+  }
+}
+const epItem = {
+  hidden: { opacity: 0, x: 60, rotate: 1.5 },
+  show: {
+    opacity: 1, x: 0, rotate: 0,
+    transition: { type: 'spring', stiffness: 70, damping: 12 }
+  }
+}
 
 export default function EpisodiesPage() {
   const [page, setPage] = useState(1)
@@ -54,32 +70,31 @@ export default function EpisodiesPage() {
   useEffect(() => {
     if (season) return
     let cancel = false
-      ; (async () => {
-        try {
-          setLoading(true); setErr('')
-          const res = await fetch(`https://thesimpsonsapi.com/api/episodes?page=${page}`, { cache: 'no-store' })
-          if (!res.ok) throw new Error(`HTTP ${res.status}`)
-          const json = await res.json()
-          if (cancel) return
+    ;(async () => {
+      try {
+        setLoading(true); setErr('')
+        const res = await fetch(`https://thesimpsonsapi.com/api/episodes?page=${page}`, { cache: 'no-store' })
+        if (!res.ok) throw new Error(`HTTP ${res.status}`)
+        const json = await res.json()
+        if (cancel) return
 
-          const data = Array.isArray(json?.results) ? json.results : []
-          setItems(data)
+        const data = Array.isArray(json?.results) ? json.results : []
+        setItems(data)
 
-          const pages = Number(json?.pages) || Math.ceil((Number(json?.count) || 0) / API_PAGE_SIZE) || 1
-          setTotalPages(pages)
-        } catch (e) {
-          if (cancel) return
-          console.error(e)
-          setErr('Error al cargar episodios')
-        } finally {
-          if (!cancel) setLoading(false)
-        }
-      })()
+        const pages = Number(json?.pages) || Math.ceil((Number(json?.count) || 0) / API_PAGE_SIZE) || 1
+        setTotalPages(pages)
+      } catch (e) {
+        if (cancel) return
+        console.error(e)
+        setErr('Error al cargar episodios')
+      } finally {
+        if (!cancel) setLoading(false)
+      }
+    })()
     return () => { cancel = true }
   }, [page, season])
 
   async function fetchSeasonBatch(targetSeason) {
-
     setSeasonLoading(true)
     try {
       const start = fetchedUntilRef.current + 1
@@ -92,6 +107,7 @@ export default function EpisodiesPage() {
         const res = await fetch(`https://thesimpsonsapi.com/api/episodes?page=${p}`, { cache: 'no-store' })
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const json = await res.json()
+
         if (!knownTotal) {
           knownTotal = Number(json?.pages) || Math.ceil((Number(json?.count) || 0) / API_PAGE_SIZE) || 1
           setTotalPages(knownTotal)
@@ -134,10 +150,9 @@ export default function EpisodiesPage() {
     fetchSeasonBatch(season)
   }, [season])
 
+  /* Lista + filtros */
   const listToRender = useMemo(() => {
-    const base = season
-      ? (seasonData[season] || [])
-      : items
+    const base = season ? (seasonData[season] || []) : items
     if (!debouncedQuery) return base
     return base.filter(ep => (ep.name || '').toLowerCase().includes(debouncedQuery))
   }, [season, seasonData, items, debouncedQuery])
@@ -152,6 +167,7 @@ export default function EpisodiesPage() {
     return listToRender.slice(start, start + SEASON_UI_PAGE_SIZE)
   }, [season, listToRender, seasonUiPage])
 
+  /* Estados de carga/errores */
   if (!season && loading) return <Loader label="Cargando episodios..." />
   if (season && seasonLoading && !(seasonData[season]?.length)) {
     return <Loader label={`Buscando episodios de la temporada ${season}...`} />
@@ -206,33 +222,49 @@ export default function EpisodiesPage() {
           {season ? `No se encontraron episodios en la temporada ${season} para esta búsqueda.` : 'No hay resultados para esta página.'}
         </Alert>
       ) : (
-        <Grid container spacing={2}>
+        <Grid
+          container
+          spacing={2}
+          component={motion.div}
+          variants={epContainer}
+          initial="hidden"
+          animate="show"
+        >
           {pagedList.map(ep => {
             const img = resolveEpisodeImage(ep, 500) || placeholder
             return (
               <Grid item key={ep.id} xs={12} md={6}>
-                <Card elevation={2}>
-                  <CardMedia
-                    component="img"
-                    image={img}
-                    alt={ep.name}
-                    loading="lazy"
-                    onError={(e) => { e.currentTarget.src = placeholder }}
-                    sx={{ aspectRatio: { xs: '4 / 3', sm: '16 / 9' }, objectFit: 'cover' }}
-                  />
-                  <CardContent>
-                    <Typography variant="h6" fontWeight="bold">{ep.name}</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Temporada {ep.season} · Ep {ep.episode_number}
-                    </Typography>
-                    <Box mt={1}>
-                      <Typography component={Link} to={`/episodio/${ep.id}`}
-                        sx={{ textDecoration: 'none', color: 'primary.main', fontWeight: 600 }}>
-                        Ver detalles →
+                <motion.div
+                  variants={epItem}
+                  whileHover={{ y: -6, rotate: -0.6 }}
+                  transition={{ type: 'spring', stiffness: 200, damping: 14 }}
+                >
+                  <Card elevation={2}>
+                    <CardMedia
+                      component="img"
+                      image={img}
+                      alt={ep.name}
+                      loading="lazy"
+                      onError={(e) => { e.currentTarget.src = placeholder }}
+                      sx={{ aspectRatio: { xs: '4 / 3', sm: '16 / 9' }, objectFit: 'cover' }}
+                    />
+                    <CardContent>
+                      <Typography variant="h6" fontWeight="bold">{ep.name}</Typography>
+                      <Typography variant="body2" color="text.secondary">
+                        Temporada {ep.season} · Ep {ep.episode_number}
                       </Typography>
-                    </Box>
-                  </CardContent>
-                </Card>
+                      <Box mt={1}>
+                        <Typography
+                          component={Link}
+                          to={`/episodio/${ep.id}`}
+                          sx={{ textDecoration: 'none', color: 'primary.main', fontWeight: 600 }}
+                        >
+                          Ver detalles →
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </motion.div>
               </Grid>
             )
           })}
