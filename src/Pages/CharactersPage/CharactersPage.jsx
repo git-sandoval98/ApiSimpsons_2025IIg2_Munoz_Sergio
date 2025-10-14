@@ -31,7 +31,7 @@ export default function CharactersPage() {
   const [apiPage, setApiPage] = useState(1)
   const [itemsApi, setItemsApi] = useState([])
   const [totalPagesApi, setTotalPagesApi] = useState(1)
-  const [totalUiPages,   setTotalUiPages] = useState(1)
+  const [totalUiPages, setTotalUiPages] = useState(1)
   const [loading, setLoading] = useState(true)
   const [err, setErr] = useState('')
 
@@ -55,34 +55,34 @@ export default function CharactersPage() {
   // Fetch
   useEffect(() => {
     let cancel = false
-    ;(async () => {
-      try {
-        setLoading(true); setErr('')
-        const res = await fetch(`https://thesimpsonsapi.com/api/characters?page=${apiPage}`, { cache:'no-store' })
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const json = await res.json()
-        if (cancel) return
+      ; (async () => {
+        try {
+          setLoading(true); setErr('')
+          const res = await fetch(`https://thesimpsonsapi.com/api/characters?page=${apiPage}`, { cache: 'no-store' })
+          if (!res.ok) throw new Error(`HTTP ${res.status}`)
+          const json = await res.json()
+          if (cancel) return
 
-        const data = Array.isArray(json) ? json :
-          Array.isArray(json?.data) ? json.data :
-          Array.isArray(json?.results) ? json.results : []
+          const data = Array.isArray(json) ? json :
+            Array.isArray(json?.data) ? json.data :
+              Array.isArray(json?.results) ? json.results : []
 
-        setItemsApi(data)
+          setItemsApi(data)
 
-        const apiPages = Number(json?.total_pages) ||
-          (Number(json?.total) ? Math.ceil(Number(json.total)/20) : null) || 60
-        setTotalPagesApi(apiPages)
+          const apiPages = Number(json?.total_pages) ||
+            (Number(json?.total) ? Math.ceil(Number(json.total) / 20) : null) || 60
+          setTotalPagesApi(apiPages)
 
-        const totalItems = Number(json?.total) || (apiPages*20)
-        setTotalUiPages(Math.max(1, Math.ceil(totalItems / UI_PAGE_SIZE)))
-      } catch (e) {
-        if (cancel) return
-        console.error(e)
-        setErr('Error al cargar personajes (¿bloqueador o API caída?)')
-      } finally {
-        if (!cancel) setLoading(false)
-      }
-    })()
+          const totalItems = Number(json?.total) || (apiPages * 20)
+          setTotalUiPages(Math.max(1, Math.ceil(totalItems / UI_PAGE_SIZE)))
+        } catch (e) {
+          if (cancel) return
+          console.error(e)
+          setErr('Error al cargar personajes (¿bloqueador o API caída?)')
+        } finally {
+          if (!cancel) setLoading(false)
+        }
+      })()
     return () => { cancel = true }
   }, [apiPage])
 
@@ -113,11 +113,11 @@ export default function CharactersPage() {
           size="small"
           label="Buscar personaje…"
           value={query}
-          onChange={(e)=> setQuery(e.target.value)}
+          onChange={(e) => setQuery(e.target.value)}
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon/>
+                <SearchIcon />
               </InputAdornment>
             )
           }}
@@ -133,23 +133,23 @@ export default function CharactersPage() {
             const id = ch.id ?? ch._id ?? ''
             return (
               <Grid item key={id || ch.name} xs={12} sm={6} md={4} lg={3}>
-                <Card elevation={2} sx={{ height:'100%', display:'flex', flexDirection:'column' }}>
+                <Card elevation={2} sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
                   <CardMedia
                     component="img"
-                    sx={{ aspectRatio:'4 / 3', width:'100%', objectFit:'contain', backgroundColor:'background.paper' }}
+                    sx={{ aspectRatio: '4 / 3', width: '100%', objectFit: 'contain', backgroundColor: 'background.paper' }}
                     image={img || placeholder}
                     alt={ch.name}
                     loading="lazy"
                     onError={(e) => { e.currentTarget.src = placeholder }}
                   />
-                  <CardContent sx={{ flexGrow:1 }}>
+                  <CardContent sx={{ flexGrow: 1 }}>
                     <Typography variant="subtitle1" fontWeight="bold">{ch.name}</Typography>
                     <Typography variant="body2" color="text.secondary">
                       {ch.occupation || 'Ocupación desconocida'}
                     </Typography>
                     <Box mt={2}>
                       <Typography component={Link} to={`/personaje/${id}`}
-                        sx={{ textDecoration:'none', color:'primary.main', fontWeight:600 }}>
+                        sx={{ textDecoration: 'none', color: 'primary.main', fontWeight: 600 }}>
                         Ver detalles →
                       </Typography>
                     </Box>
@@ -167,9 +167,20 @@ export default function CharactersPage() {
           page={uiPage}
           onChange={(_, v) => setUiPage(v)}
           color="primary"
+          size="medium"
           shape="rounded"
-          sx={{ '& ul':{ display:'flex', flexDirection:'row', flexWrap:'wrap', justifyContent:'center' } }}
+          sx={{
+            '& ul': {
+              display: 'flex !important',
+              flexDirection: 'row !important',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexWrap: 'wrap',
+              gap: '4px',
+            },
+          }}
         />
+
       </Box>
     </Box>
   )

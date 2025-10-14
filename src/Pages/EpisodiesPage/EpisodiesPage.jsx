@@ -22,10 +22,10 @@ function resolveEpisodeImage(ep, size = 500) {
   return cdnUrl(candidates[0], 'episode', size)
 }
 
-const API_PAGE_SIZE = 20  
-const SEASON_UI_PAGE_SIZE = 12   
-const FETCH_BATCH = 5        
-const SEASON_OPTIONS_MAX = 50   
+const API_PAGE_SIZE = 20
+const SEASON_UI_PAGE_SIZE = 12
+const FETCH_BATCH = 5
+const SEASON_OPTIONS_MAX = 50
 
 export default function EpisodiesPage() {
   const [page, setPage] = useState(1)
@@ -37,12 +37,12 @@ export default function EpisodiesPage() {
   const [query, setQuery] = useState('')
   const [debouncedQuery, setDebouncedQuery] = useState('')
 
-  const [season, setSeason] = useState('')  
+  const [season, setSeason] = useState('')
   const [seasonData, setSeasonData] = useState({})
   const [seasonLoading, setSeasonLoading] = useState(false)
   const [seasonDone, setSeasonDone] = useState(false)
   const [seasonUiPage, setSeasonUiPage] = useState(1)
-  const fetchedUntilRef = useRef(0) 
+  const fetchedUntilRef = useRef(0)
 
   const placeholder = `${import.meta.env.BASE_URL}placeholder.png`
 
@@ -54,27 +54,27 @@ export default function EpisodiesPage() {
   useEffect(() => {
     if (season) return
     let cancel = false
-    ;(async () => {
-      try {
-        setLoading(true); setErr('')
-        const res = await fetch(`https://thesimpsonsapi.com/api/episodes?page=${page}`, { cache:'no-store' })
-        if (!res.ok) throw new Error(`HTTP ${res.status}`)
-        const json = await res.json()
-        if (cancel) return
+      ; (async () => {
+        try {
+          setLoading(true); setErr('')
+          const res = await fetch(`https://thesimpsonsapi.com/api/episodes?page=${page}`, { cache: 'no-store' })
+          if (!res.ok) throw new Error(`HTTP ${res.status}`)
+          const json = await res.json()
+          if (cancel) return
 
-        const data = Array.isArray(json?.results) ? json.results : []
-        setItems(data)
+          const data = Array.isArray(json?.results) ? json.results : []
+          setItems(data)
 
-        const pages = Number(json?.pages) || Math.ceil((Number(json?.count)||0) / API_PAGE_SIZE) || 1
-        setTotalPages(pages)
-      } catch (e) {
-        if (cancel) return
-        console.error(e)
-        setErr('Error al cargar episodios')
-      } finally {
-        if (!cancel) setLoading(false)
-      }
-    })()
+          const pages = Number(json?.pages) || Math.ceil((Number(json?.count) || 0) / API_PAGE_SIZE) || 1
+          setTotalPages(pages)
+        } catch (e) {
+          if (cancel) return
+          console.error(e)
+          setErr('Error al cargar episodios')
+        } finally {
+          if (!cancel) setLoading(false)
+        }
+      })()
     return () => { cancel = true }
   }, [page, season])
 
@@ -89,11 +89,11 @@ export default function EpisodiesPage() {
       let knownTotal = totalPages
 
       for (let p = start; p <= end; p++) {
-        const res = await fetch(`https://thesimpsonsapi.com/api/episodes?page=${p}`, { cache:'no-store' })
+        const res = await fetch(`https://thesimpsonsapi.com/api/episodes?page=${p}`, { cache: 'no-store' })
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const json = await res.json()
         if (!knownTotal) {
-          knownTotal = Number(json?.pages) || Math.ceil((Number(json?.count)||0) / API_PAGE_SIZE) || 1
+          knownTotal = Number(json?.pages) || Math.ceil((Number(json?.count) || 0) / API_PAGE_SIZE) || 1
           setTotalPages(knownTotal)
         }
 
@@ -176,7 +176,7 @@ export default function EpisodiesPage() {
               labelId="season-label"
               label="Temporada"
               value={season}
-              onChange={(e)=> { setSeason(e.target.value); setQuery('') }}
+              onChange={(e) => { setSeason(e.target.value); setQuery('') }}
             >
               <MenuItem value="">Todas</MenuItem>
               {Array.from({ length: SEASON_OPTIONS_MAX }, (_, i) => i + 1).map(n => (
@@ -189,11 +189,11 @@ export default function EpisodiesPage() {
             size="small"
             label="Buscar episodio…"
             value={query}
-            onChange={(e)=> setQuery(e.target.value)}
+            onChange={(e) => setQuery(e.target.value)}
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon/>
+                  <SearchIcon />
                 </InputAdornment>
               )
             }}
@@ -217,8 +217,8 @@ export default function EpisodiesPage() {
                     image={img}
                     alt={ep.name}
                     loading="lazy"
-                    onError={(e)=> { e.currentTarget.src = placeholder }}
-                    sx={{ aspectRatio:{ xs:'4 / 3', sm:'16 / 9' }, objectFit:'cover' }}
+                    onError={(e) => { e.currentTarget.src = placeholder }}
+                    sx={{ aspectRatio: { xs: '4 / 3', sm: '16 / 9' }, objectFit: 'cover' }}
                   />
                   <CardContent>
                     <Typography variant="h6" fontWeight="bold">{ep.name}</Typography>
@@ -227,7 +227,7 @@ export default function EpisodiesPage() {
                     </Typography>
                     <Box mt={1}>
                       <Typography component={Link} to={`/episodio/${ep.id}`}
-                        sx={{ textDecoration:'none', color:'primary.main', fontWeight:600 }}>
+                        sx={{ textDecoration: 'none', color: 'primary.main', fontWeight: 600 }}>
                         Ver detalles →
                       </Typography>
                     </Box>
@@ -247,7 +247,7 @@ export default function EpisodiesPage() {
             onChange={(_, v) => setPage(v)}
             color="primary"
             shape="rounded"
-            sx={{ '& ul':{ display:'flex', flexDirection:'row', flexWrap:'wrap', justifyContent:'center' } }}
+            sx={{ '& ul': { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' } }}
           />
         ) : (
           <Pagination
@@ -256,7 +256,7 @@ export default function EpisodiesPage() {
             onChange={(_, v) => window.scrollTo({ top: 0, behavior: 'smooth' }) || setSeasonUiPage(v)}
             color="primary"
             shape="rounded"
-            sx={{ '& ul':{ display:'flex', flexDirection:'row', flexWrap:'wrap', justifyContent:'center' } }}
+            sx={{ '& ul': { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center' } }}
           />
         )}
       </Box>

@@ -1,3 +1,13 @@
+:root{
+  --header-h: 120px;   /* alto del header */
+  --sidebar-w: 220px;  /* ancho del navbar */
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+
 *{ margin:0; 
   padding:0; 
   box-sizing:border-box; }
@@ -11,7 +21,15 @@ body{ overflow-x:hidden;
   margin-left: 200px; 
   padding: 16px;
   min-height: 100vh;
+
 }
+
+/* App.css
+#container-pages{
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+  min-height: calc(100vh - var(--header-h));} */
+
 
 .card { transition: transform .15s ease; }
 .card:hover { transform: translateY(-2px); }

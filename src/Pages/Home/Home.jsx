@@ -1,88 +1,163 @@
-import { Box, Typography, Grid, CardContent } from '@mui/material'
+import { useEffect, useMemo, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
-import AnimatedCard from '../../Components/Animated/AnimatedCard'
-import AnimatedMedia from '../../Components/Animated/AnimatedMedia'
 import './Home.css'
+import Banner1 from '../../assets/los-simpsons-horizontal-1.jpg'
+import Banner2 from '../../assets/los-simpsons-horizontal-2.jpg'
+import Banner3 from '../../assets/los-simpsons-horizontal-3.jpg'
 
-const cdn = (path, size = 500) => `https://cdn.thesimpsonsapi.com/${size}${path}`
+/**
+ * Pequeño componente de máquina de escribir que soporta
+ * varias partes (para estilizar “Los Simpsons” con gradiente).
+ *
+ * parts: [{ text: string, className?: string }]
+ */
+function TypewriterMulti({ parts, speed = 40, startDelay = 300 }) {
+  const [n, setN] = useState(0)
 
-const highlights = [
-  { title: 'Personajes', desc: 'Conoce a los habitantes de Springfield: su trabajo, estado y más.', img: cdn('/character/1.webp'), link: '/personajes' },
-  { title: 'Episodios',  desc: 'Explora la historia de la serie temporada por temporada.',           img: cdn('/episode/1.webp'),   link: '/episodios' },
-  { title: 'Lugares',    desc: 'Visita locaciones icónicas: la planta nuclear, el Bar de Moe y más.', img: cdn('/location/1.webp'),   link: '/localizacion' },
-]
+  const total = useMemo(
+    () => parts.reduce((acc, p) => acc + (p.text?.length || 0), 0),
+    [parts]
+  )
+
+  useEffect(() => {
+    let t1 = setTimeout(() => {
+      const id = setInterval(() => {
+        setN((v) => {
+          if (v >= total) {
+            clearInterval(id)
+            return v
+          }
+          return v + 1
+        })
+      }, speed)
+    }, startDelay)
+
+    return () => {
+      clearTimeout(t1)
+    }
+  }, [speed, startDelay, total])
+
+  let consumed = 0
+  return (
+    <span className="tw">
+      {parts.map((p, idx) => {
+        const len = p.text.length
+        const visible = Math.max(0, Math.min(len, n - consumed))
+        consumed += len
+        return (
+          <span key={idx} className={p.className || ''}>
+            {p.text.slice(0, visible)}
+          </span>
+        )
+      })}
+      <span className={`tw__caret ${n >= total ? 'tw__caret--hidden' : ''}`} />
+    </span>
+  )
+}
+
+const container = {
+  hidden: { opacity: 0, y: 8 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { staggerChildren: 0.08, duration: 0.5, ease: 'easeOut' }
+  }
+}
+
+const item = {
+  hidden: { opacity: 0, y: 10 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45 } }
+}
 
 export default function Home() {
+  const titleParts = [
+    { text: 'Bienvenido al Mundo de ' },
+    { text: 'Los Simpsons', className: 'hero__title--gradient' },
+    { text: ' por Sergio Muñoz' }
+  ]
+
   return (
-    <Box className="home-root">
+    <div className="home">
       <motion.section
-        className="home-hero"
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.35, ease: 'easeOut' }}
+        className="hero"
+        variants={container}
+        initial="hidden"
+        animate="show"
       >
-        <div className="hero-left">
-          <Typography variant="h3" component="h2" className="home-title">
-            Bienvenido al Mundo de <span>Los Simpsons</span> por Sergio Muñoz
-          </Typography>
-          <Typography variant="h6" className="home-subtitle">
-            Explora personajes, episodios y locaciones de la serie animada más famosa del mundo.
-          </Typography>
-          <div className="hero-note">Usa el menú o las tarjetas para navegar por las secciones.</div>
-        </div>
-        <div className="hero-right">
-          <div className="donut">🍩</div>
-          <div className="cloud cloud-a" />
-          <div className="cloud cloud-b" />
-        </div>
+        <motion.h2 className="hero__title" variants={item}>
+          <TypewriterMulti parts={titleParts} speed={35} startDelay={250} />
+        </motion.h2>
+
+        <motion.p className="hero__subtitle" variants={item}>
+          Explora personajes, episodios y locaciones de la serie animada más famosa del mundo.
+        </motion.p>
+
+        <motion.div className="hero__hint" variants={item}>
+          Usa el menú o las tarjetas para navegar por las secciones.
+        </motion.div>
+
+        {/* Nubes y donita flotando */}
+        <motion.div
+          className="cloud cloud--left"
+          initial={{ y: 0 }}
+          animate={{ y: [0, -6, 0] }}
+          transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="cloud cloud--right"
+          initial={{ y: 0 }}
+          animate={{ y: [-2, 6, -2] }}
+          transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+        />
+        <motion.div
+          className="donut-float"
+          initial={{ rotate: -6, y: 0 }}
+          animate={{ rotate: [-6, 6, -6], y: [0, -8, 0] }}
+          transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
+        >
+          🍩
+        </motion.div>
       </motion.section>
 
-      {/* TARJETAS */}
-      <motion.section
-        className="home-highlights"
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.2 }}
-        variants={{ hidden: { opacity: 0, y: 12 }, visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.08 } } }}
-      >
-        <Grid container spacing={2}>
-          {highlights.map((item, idx) => (
-            <Grid item xs={12} sm={6} md={4} key={idx}>
-              <AnimatedCard
-                component={Link}
-                to={item.link}
-                className="home-card clickable"
-                elevation={3}
-                delay={idx * 0.05}
-              >
-                <AnimatedMedia
-                  component="img"
-                  image={item.img}
-                  alt={item.title}
-                  loading="lazy"
-                  onError={(e) => { e.currentTarget.src = `${import.meta.env.BASE_URL}placeholder.png` }}
-                  sx={{ aspectRatio: '4 / 3', width: '100%', objectFit: 'cover', backgroundColor: 'var(--card-bg)' }}
-                  zoom={1.06}
-                />
-                <CardContent>
-                  <Typography variant="h6" fontWeight={700} gutterBottom>{item.title}</Typography>
-                  <Typography variant="body2" color="text.secondary">{item.desc}</Typography>
-                </CardContent>
-              </AnimatedCard>
-            </Grid>
-          ))}
-        </Grid>
-      </motion.section>
-      <motion.section
-        className="home-quote"
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, amount: 0.4 }}
-        transition={{ duration: 0.5 }}
-      >
-        <blockquote>“Intentar es el primer paso hacia el fracaso.” — <span>Homero Simpson</span></blockquote>
-      </motion.section>
-    </Box>
+      {/* Tarjetas / accesos rápidos */}
+      <div className="cards-container">
+        <Link to="/personajes" className="home-card">
+          <img
+          src={Banner1}
+            // src="https://static.simpsonswiki.com/images/0/02/Homer_Simpson.png"
+            alt="Personajes"
+          />
+          <div>
+            <h3>Personajes</h3>
+            <p>Conoce a los habitantes de Springfield: su trabajo, estado y más.</p>
+          </div>
+        </Link>
+
+        <Link to="/episodios" className="home-card">
+          <img
+          src={Banner2}
+            // src="https://static.simpsonswiki.com/images/8/8a/Simpsons_Roasting_on_an_Open_Fire.jpg"
+            alt="Episodios"
+          />
+          <div>
+            <h3>Episodios</h3>
+            <p>Explora la historia de la serie temporada por temporada.</p>
+          </div>
+        </Link>
+
+        <Link to="/lugares" className="home-card">
+          <img
+          src={Banner3}
+            // src="https://static.simpsonswiki.com/images/0/0b/The_Simpsons_House.png"
+            alt="Lugares"
+          />
+          <div>
+            <h3>Lugares</h3>
+            <p>Descubre los lugares más icónicos de Springfield.</p>
+          </div>
+        </Link>
+      </div>
+    </div>
   )
 }
