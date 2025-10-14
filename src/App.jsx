@@ -9,6 +9,7 @@ import EpisodiesPage from './Pages/EpisodiesPage/EpisodiesPage'
 import LocationPage from './Pages/LocationPage/LocationPage'
 import EpisodeDetail from './Pages/EpisodeDetail/EpisodeDetail'
 import LocationDetail from './Pages/LocationDetail/LocationDetail'
+import CharacterDetail from './Pages/CharacterDetail/CharacterDetail' 
 import NotFound from './Pages/NotFound/NotFound'
 import Page from './Components/Page/Page'
 import ScrollToTop from './Components/Page/ScrollToTop'
@@ -21,6 +22,7 @@ function AnimatedRoutes() {
       <Routes location={location} key={location.pathname}>
         <Route path="/" element={<Page><Home /></Page>} />
         <Route path="/personajes" element={<Page><CharactersPage /></Page>} />
+        <Route path="/personaje/:id" element={<Page><CharacterDetail /></Page>} />
         <Route path="/episodios" element={<Page><EpisodiesPage /></Page>} />
         <Route path="/localizacion" element={<Page><LocationPage /></Page>} />
         <Route path="/episodio/:id" element={<Page><EpisodeDetail /></Page>} />

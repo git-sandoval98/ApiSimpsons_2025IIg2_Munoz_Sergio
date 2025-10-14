@@ -16,7 +16,6 @@ const highlights = [
 export default function Home() {
   return (
     <Box className="home-root">
-      {/* HERO */}
       <motion.section
         className="home-hero"
         initial={{ opacity: 0, y: 12 }}
@@ -25,7 +24,7 @@ export default function Home() {
       >
         <div className="hero-left">
           <Typography variant="h3" component="h2" className="home-title">
-            Bienvenido al Mundo de <span>Los Simpsons</span>
+            Bienvenido al Mundo de <span>Los Simpsons</span> por Sergio Muñoz
           </Typography>
           <Typography variant="h6" className="home-subtitle">
             Explora personajes, episodios y locaciones de la serie animada más famosa del mundo.

@@ -43,7 +43,7 @@ export default function LocationPage() {
 
   return (
     <Box p={2} width="100%">
-      <Typography variant="h5" fontWeight="bold" mb={2}>Lugares</Typography>
+      <Typography variant="h5" fontWeight="bold" align='center' mb={2}>Lugares</Typography>
 
       <Grid container spacing={2}>
         {items.map((loc, idx) => {

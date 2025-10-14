@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import {Box, Typography, Chip, Card, CardMedia, CardContent, CircularProgress, Alert, Button, Divider} from '@mui/material'
+import {
+  Box, Typography, Chip, Card, CardMedia, CardContent,
+  CircularProgress, Alert, Button, Divider
+} from '@mui/material'
 
 function cdnUrl(imagePath, kind = 'character', size = 1280) {
   if (!imagePath) return ''
   let p = String(imagePath).trim()
-
   if (/^https?:\/\//i.test(p)) return p
-
   if (!p.includes('/')) p = `/${kind}/${p}`
-
   if (!p.startsWith('/')) p = '/' + p
   return `https://cdn.thesimpsonsapi.com/${size}${p}`
 }
@@ -45,7 +45,6 @@ export default function CharacterDetail() {
         if (!res.ok) throw new Error(`HTTP ${res.status}`)
         const json = await res.json()
         if (cancel) return
-
         setCh(json)
       } catch (e) {
         if (cancel) return
@@ -77,7 +76,9 @@ export default function CharacterDetail() {
 
   if (!ch) return null
 
-  const img = resolveCharacterImage(ch, 1280) || placeholder
+  const img500  = resolveCharacterImage(ch, 500)
+  const img1280 = resolveCharacterImage(ch, 1280)
+  const mainImg = img1280 || img500 || placeholder
 
   return (
     <Box p={2}>
@@ -88,19 +89,37 @@ export default function CharacterDetail() {
       <Card sx={{ maxWidth: 1000, mx: 'auto' }}>
         <CardMedia
           component="img"
-          height="420"
-          image={img}
+          image={mainImg}
           alt={ch.name}
           loading="lazy"
+          srcSet={
+            img500 && img1280
+              ? `${img500} 500w, ${img1280} 1280w`
+              : undefined
+          }
+          sizes="(max-width: 600px) 100vw, 1000px"
           onError={(e) => { e.currentTarget.src = placeholder }}
+          sx={{
+            width: '100%',
+            aspectRatio: { xs: '4 / 3', sm: '16 / 9' },
+            height: { xs: 260, sm: 360, md: 420 },
+            objectFit: 'contain',
+            backgroundColor: 'background.paper',
+          }}
         />
+
         <CardContent>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
             {ch.name}
           </Typography>
 
           <Box display="flex" gap={1} flexWrap="wrap" mb={2}>
-            {ch.status && <Chip label={ch.status} color={ch.status === 'Deceased' ? 'error' : 'success'} />}
+            {ch.status && (
+              <Chip
+                label={ch.status}
+                color={ch.status === 'Deceased' ? 'error' : 'success'}
+              />
+            )}
             {ch.gender && <Chip label={ch.gender} />}
             {typeof ch.age === 'number' && <Chip label={`Edad: ${ch.age}`} />}
           </Box>
@@ -113,7 +132,9 @@ export default function CharacterDetail() {
 
           {Array.isArray(ch.phrases) && ch.phrases.length > 0 && (
             <>
-              <Typography variant="h6" fontWeight="bold" gutterBottom>Frases célebres</Typography>
+              <Typography variant="h6" fontWeight="bold" gutterBottom>
+                Frases célebres
+              </Typography>
               <ul style={{ marginTop: 8, paddingLeft: 18 }}>
                 {ch.phrases.slice(0, 8).map((p, i) => (
                   <li key={i}><Typography variant="body2">“{p}”</Typography></li>
