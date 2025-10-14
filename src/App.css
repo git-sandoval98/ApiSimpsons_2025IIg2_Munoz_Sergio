@@ -21,6 +21,7 @@ body{ overflow-x:hidden;
   margin-left: 200px; 
   padding: 16px;
   min-height: 100vh;
+  scroll-margin-top: 96px;
 
 }
 

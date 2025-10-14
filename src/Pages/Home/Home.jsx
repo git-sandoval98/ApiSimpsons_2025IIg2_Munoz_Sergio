@@ -124,7 +124,7 @@ export default function Home() {
       <div className="cards-container">
         <Link to="/personajes" className="home-card">
           <img
-          src={Banner1}
+            src={Banner1}
             // src="https://static.simpsonswiki.com/images/0/02/Homer_Simpson.png"
             alt="Personajes"
           />
@@ -136,7 +136,7 @@ export default function Home() {
 
         <Link to="/episodios" className="home-card">
           <img
-          src={Banner2}
+            src={Banner2}
             // src="https://static.simpsonswiki.com/images/8/8a/Simpsons_Roasting_on_an_Open_Fire.jpg"
             alt="Episodios"
           />
@@ -148,7 +148,7 @@ export default function Home() {
 
         <Link to="/lugares" className="home-card">
           <img
-          src={Banner3}
+            src={Banner3}
             // src="https://static.simpsonswiki.com/images/0/0b/The_Simpsons_House.png"
             alt="Lugares"
           />
@@ -158,6 +158,17 @@ export default function Home() {
           </div>
         </Link>
       </div>
+      <motion.section
+        className="home-quote"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 1, ease: "easeOut" }}
+      >
+        <blockquote>
+          “Intentar es el primer paso hacia el fracaso.”
+          <span> — Homero Simpson</span>
+        </blockquote>
+      </motion.section>
     </div>
   )
 }
