@@ -51,21 +51,43 @@
 }
 
 @media (max-width: 768px) {
+
+  .site-header {
+    width: 100vw;
+    margin: 0;
+    left: 0;
+    right: 0;
+  }
+
   .side-nav {
-    position: fixed;
+    position: static;     
+    top: 0;
+    left: 0;
     width: 100%;
     height: auto;
+    background-color: #FED420;
     flex-direction: row;
     justify-content: center;
-    padding: 10px 0;
+    align-items: center;
+    padding: 8px 0;  
+    margin-top: 0; 
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: auto;
   }
 
   .side-nav__list {
     flex-direction: row;
-    gap: 20px;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
   }
 
   .side-nav__item a {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+    padding: 6px 10px;
+  }
+
+  main, .home {
+    padding-top: 0;
   }
 }

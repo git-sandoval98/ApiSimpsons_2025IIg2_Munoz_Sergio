@@ -1,4 +1,4 @@
-.site-header {
+/* .site-header {
   position: sticky;
   top: 0;
   z-index: 1100;
@@ -10,7 +10,26 @@
   box-shadow: 0 4px 20px rgba(0,0,0,0.35);
   margin: 0;
   border-bottom: none;
+} */
+
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  background-color: #FED420;
+  display: flex;
+  align-items: center;
+
+  padding: 10px 20px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.40);
+  z-index: 9999;
 }
+
+body {
+  padding-top: 120px;
+}
+
 
 .site-logo {
   height: 86px;
@@ -42,3 +61,28 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+@media (max-width: 768px) {
+  /* .site-header {
+    width: 100vw; 
+    margin: 0;
+    left: 0;
+    right: 0;
+  } */
+   .site-header {
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 8px 16px;
+    z-index: 9999;
+  }
+
+  body {
+    padding-top: 100px;
+  }
+}
+
+
+  

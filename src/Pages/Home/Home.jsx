@@ -6,12 +6,6 @@ import Banner1 from '../../assets/los-simpsons-horizontal-1.jpg'
 import Banner2 from '../../assets/los-simpsons-horizontal-2.jpg'
 import Banner3 from '../../assets/los-simpsons-horizontal-3.jpg'
 
-/**
- * Pequeño componente de máquina de escribir que soporta
- * varias partes (para estilizar “Los Simpsons” con gradiente).
- *
- * parts: [{ text: string, className?: string }]
- */
 function TypewriterMulti({ parts, speed = 40, startDelay = 300 }) {
   const [n, setN] = useState(0)
 

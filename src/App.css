@@ -50,3 +50,13 @@ body{ overflow-x:hidden;
     padding: 12px;
   }
 }
+
+#container-pages{
+  display: flex;
+
+}
+
+#container-pages > div{
+  flex: 1 1 auto;
+  padding: 16px;
+}
